@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import "./styles.css";
 
 export default function App() {
-  const [isFetchingJoke, setIsFetchingJoke] = useState(true);
-  const [joke, setJoke] = useState();
+  const [isFetchingJoke, setIsFetchingJoke] = useState(false);
+  const [search, setSearch] = useState();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [jokes, setJokes] = useState([]);
 
   useEffect(() => {
-    fetchJoke();
+    searchJokes();
   }, []);
 
-  const fetchJoke = () => {
+  const searchJokes = () => {
     setIsFetchingJoke(true);
-    fetch("https://icanhazdadjoke.com/", {
+    fetch(`https://icanhazdadjoke.com/search?term=${searchTerm}`, {
       method: "GET",
       headers: {
         Accept: "application/json"
@@ -19,20 +21,49 @@ export default function App() {
     })
       .then((response) => response.json())
       .then((json) => {
-        setJoke(json.joke);
+        setJokes(json.results);
         setIsFetchingJoke(false);
+        console.log(json.results);
       });
   };
 
   const onTellJoke = () => {
-    fetchJoke();
+    searchJokes();
+  };
+
+  const onSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const onSubmitJoke = (event) => {
+    event.preventDefault();
+    searchJokes();
+  };
+
+  const renderJokes = () => {
+    return (
+      <ul>
+        {jokes.map((item) => (
+          <li>{item.joke}</li>
+        ))}
+      </ul>
+    );
   };
   return (
     <div>
-      <button onClick={onTellJoke} disabled={isFetchingJoke}>
-        Tell me a joke!
-      </button>
-      <p>{isFetchingJoke ? "Loading joke..." : joke}</p>
+      <form onSubmit={onSubmitJoke}>
+        <input
+          type="text"
+          placeholder="Insert a search term"
+          onChange={onSearchChange}
+        ></input>
+        <button>Search</button>
+        <button onClick={onTellJoke} disabled={isFetchingJoke}>
+          Tell me a joke!
+        </button>
+      </form>
+      {isFetchingJoke ? "Searching for jokes..." : renderJokes()}
+      <p>Search term: {searchTerm}</p>
     </div>
   );
 }
