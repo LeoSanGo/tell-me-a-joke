@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles.css";
 
 export default function App() {
+  const [isFetchingJoke, setIsFetchingJoke] = useState(true);
   const [joke, setJoke] = useState();
 
-  const onTellJoke = () => {
+  useEffect(() => {
+    fetchJoke();
+  }, []);
+
+  const fetchJoke = () => {
+    setIsFetchingJoke(true);
     fetch("https://icanhazdadjoke.com/", {
       method: "GET",
       headers: {
@@ -12,12 +18,21 @@ export default function App() {
       }
     })
       .then((response) => response.json())
-      .then((json) => setJoke(json.joke));
+      .then((json) => {
+        setJoke(json.joke);
+        setIsFetchingJoke(false);
+      });
+  };
+
+  const onTellJoke = () => {
+    fetchJoke();
   };
   return (
     <div>
-      <button onClick={onTellJoke}>Tell me a joke!</button>
-      <p>{joke}</p>
+      <button onClick={onTellJoke} disabled={isFetchingJoke}>
+        Tell me a joke!
+      </button>
+      <p>{isFetchingJoke ? "Loading joke..." : joke}</p>
     </div>
   );
 }
