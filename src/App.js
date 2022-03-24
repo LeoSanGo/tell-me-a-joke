@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SearchForm from "./SearchForm";
 import "./styles.css";
 
 export default function App() {
@@ -11,59 +12,48 @@ export default function App() {
     searchJokes();
   }, []);
 
-  const searchJokes = () => {
+  const searchJokes = (limit = 20) => {
     setIsFetchingJoke(true);
-    fetch(`https://icanhazdadjoke.com/search?term=${searchTerm}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json"
+    fetch(
+      `https://icanhazdadjoke.com/search?term=${searchTerm}&limit=${limit}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json"
+        }
       }
-    })
+    )
       .then((response) => response.json())
       .then((json) => {
         setJokes(json.results);
         setIsFetchingJoke(false);
-        console.log(json.results);
       });
   };
 
-  const onTellJoke = () => {
-    searchJokes();
-  };
-
-  const onSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const onSubmitJoke = (event) => {
-    event.preventDefault();
-    searchJokes();
+  const onSearchChange = (value) => {
+    setSearchTerm(value);
   };
 
   const renderJokes = () => {
     return (
       <ul>
         {jokes.map((item) => (
-          <li>{item.joke}</li>
+          <li key={item.id}>{item.joke}</li>
         ))}
       </ul>
     );
   };
+
   return (
     <div>
-      <form onSubmit={onSubmitJoke}>
-        <input
-          type="text"
-          placeholder="Insert a search term"
-          onChange={onSearchChange}
-        ></input>
-        <button>Search</button>
-        <button onClick={onTellJoke} disabled={isFetchingJoke}>
-          Tell me a joke!
-        </button>
-      </form>
+      <SearchForm
+        onFormSubmit={searchJokes}
+        onSearchValueChange={onSearchChange}
+        isSearching={isFetchingJoke}
+        onSingleSearchClick={() => searchJokes(1)}
+      />
+
       {isFetchingJoke ? "Searching for jokes..." : renderJokes()}
-      <p>Search term: {searchTerm}</p>
     </div>
   );
 }
