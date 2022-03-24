@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import SearchForm from "./SearchForm";
+import JokesSearchList from "./JokesSearchList";
 import "./styles.css";
 
 export default function App() {
@@ -7,10 +8,6 @@ export default function App() {
   const [search, setSearch] = useState();
   const [searchTerm, setSearchTerm] = useState("");
   const [jokes, setJokes] = useState([]);
-
-  useEffect(() => {
-    searchJokes();
-  }, []);
 
   const searchJokes = (limit = 20) => {
     setIsFetchingJoke(true);
@@ -36,7 +33,7 @@ export default function App() {
 
   const renderJokes = () => {
     return (
-      <ul>
+      <ul className="jokes-list">
         {jokes.map((item) => (
           <li key={item.id}>{item.joke}</li>
         ))}
@@ -45,7 +42,8 @@ export default function App() {
   };
 
   return (
-    <div>
+    <div className="App">
+      <img className="logo" src="/google-dad-jokes-logo.png" alt="dad jokes" />
       <SearchForm
         onFormSubmit={searchJokes}
         onSearchValueChange={onSearchChange}
@@ -53,7 +51,11 @@ export default function App() {
         onSingleSearchClick={() => searchJokes(1)}
       />
 
-      {isFetchingJoke ? "Searching for jokes..." : renderJokes()}
+      {isFetchingJoke ? (
+        "Searching for jokes..."
+      ) : (
+        <JokesSearchList listOfJokes={jokes} />
+      )}
     </div>
   );
 }
