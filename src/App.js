@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SearchForm from "./SearchForm";
 import JokesSearchList from "./JokesSearchList";
 import "./styles.css";
