@@ -12,6 +12,7 @@ const SearchForm = (props) => {
       <input
         type="text"
         placeholder="Insert a search term"
+        value={props.inputSearchValue}
         onChange={(event) => props.onSearchValueChange(event.target.value)}
       />
       <div>
@@ -22,6 +23,7 @@ const SearchForm = (props) => {
         >
           Tell me a joke!
         </button>
+        <button onClick={props.onClearSearch}>Clear</button>
       </div>
     </form>
   );

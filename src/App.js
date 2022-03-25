@@ -5,7 +5,7 @@ import "./styles.css";
 
 export default function App() {
   const [isFetchingJoke, setIsFetchingJoke] = useState(false);
-  const [search, setSearch] = useState();
+  const [hasResults, setHasResults] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [jokes, setJokes] = useState([]);
 
@@ -23,24 +23,24 @@ export default function App() {
       .then((response) => response.json())
       .then((json) => {
         setJokes(json.results);
-        console.log(jokes);
+        console.log(json.results);
 
         setIsFetchingJoke(false);
+        jokes.length > 0 ? setHasResults(true) : setHasResults(false);
       });
+
+    console.log(hasResults);
   };
 
   const onSearchChange = (value) => {
     setSearchTerm(value);
   };
 
-  const renderJokes = () => {
-    return (
-      <ul className="jokes-list">
-        {jokes.map((item) => (
-          <li key={item.id}>{item.joke}</li>
-        ))}
-      </ul>
-    );
+  const clearSearch = (e) => {
+    setSearchTerm("");
+    setJokes([]);
+    setHasResults(true);
+    e.preventDefault();
   };
 
   return (
@@ -51,6 +51,8 @@ export default function App() {
         onSearchValueChange={onSearchChange}
         isSearching={isFetchingJoke}
         onSingleSearchClick={() => searchJokes(1)}
+        onClearSearch={clearSearch}
+        inputSearchValue={searchTerm}
       />
 
       {isFetchingJoke ? (
@@ -58,7 +60,7 @@ export default function App() {
       ) : (
         <JokesSearchList listOfJokes={jokes} />
       )}
-      <p>{jokes.length === 0 ? "No results found!" : ""}</p>
+      <p>{jokes.length > 0 || hasResults ? "" : "No results found!"}</p>
     </div>
   );
 }
