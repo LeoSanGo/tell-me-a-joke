@@ -23,6 +23,8 @@ export default function App() {
       .then((response) => response.json())
       .then((json) => {
         setJokes(json.results);
+        console.log(jokes);
+
         setIsFetchingJoke(false);
       });
   };
@@ -56,6 +58,7 @@ export default function App() {
       ) : (
         <JokesSearchList listOfJokes={jokes} />
       )}
+      <p>{jokes.length === 0 ? "No results found!" : ""}</p>
     </div>
   );
 }
