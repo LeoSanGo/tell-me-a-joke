@@ -7,6 +7,7 @@ export default function App() {
   const [isFetchingJoke, setIsFetchingJoke] = useState(false);
   const [hasResults, setHasResults] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [inputJokeValue, setinputJokeValue] = useState(1);
   const [jokes, setJokes] = useState([]);
 
   const searchJokes = (limit = 20) => {
@@ -35,6 +36,9 @@ export default function App() {
   const onSearchChange = (value) => {
     setSearchTerm(value);
   };
+  const onInputJokeChange = (value) => {
+    setinputJokeValue(value);
+  };
 
   const clearSearch = (e) => {
     setSearchTerm("");
@@ -49,10 +53,12 @@ export default function App() {
       <SearchForm
         onFormSubmit={searchJokes}
         onSearchValueChange={onSearchChange}
+        onInputJokeValueChange={onInputJokeChange}
         isSearching={isFetchingJoke}
-        onSingleSearchClick={() => searchJokes(1)}
+        onSingleSearchClick={() => searchJokes(inputJokeValue)}
         onClearSearch={clearSearch}
         inputSearchValue={searchTerm}
+        inputJokeValue={inputJokeValue}
       />
 
       {isFetchingJoke ? (
