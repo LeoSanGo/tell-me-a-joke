@@ -14,6 +14,7 @@ const SearchForm = (props) => {
         placeholder="Insert a search term"
         value={props.inputSearchValue}
         onChange={(event) => props.onSearchValueChange(event.target.value)}
+        onKeyPress={props.onFormSubmit}
       />
       <div>
         <button disabled={props.isSearching}>Search</button>
